@@ -3,6 +3,10 @@
 #include <SD.h>
 #include <Arduino.h>
 
+#include <DS1307.h>
+
+DS1307 rtc;
+
 #define SDpin 10
 String P[6] = {"0"};
 
@@ -60,7 +64,14 @@ short polyMap (double X) {
 
 void setup() {
 
+  //start RTC
+  rtc.start();
+
+  //rtc.set(0, 4, 16, 19, 03, 2017); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
+
   updateCalVars();
+
+
 
   Serial.begin(9600);
   while(!Serial){} // wait for serial link
@@ -70,4 +81,27 @@ void setup() {
 
 void loop() {
 
+  uint8_t sec, min, hour, day, month;
+  uint16_t year;
+
+  //get time from RTC
+  rtc.get(&sec, &min, &hour, &day, &month, &year);
+
+  //serial output
+  Serial.print("\nTime: ");
+  Serial.print(hour, DEC);
+  Serial.print(":");
+  Serial.print(min, DEC);
+  Serial.print(":");
+  Serial.print(sec, DEC);
+
+  Serial.print("\nDate: ");
+  Serial.print(day, DEC);
+  Serial.print(".");
+  Serial.print(month, DEC);
+  Serial.print(".");
+  Serial.print(year, DEC);
+
+  //wait a second
+  delay(1000);
 }
