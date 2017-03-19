@@ -10,12 +10,12 @@ DS1307 rtc;
 #define SDpin 10
 String P[6] = {"0"};
 
+uint8_t sec, min, hour, day, month;
+uint16_t year;
+
+#include <LiquidCrystal_I2C.h>
+
 void updateCalVars() {
-
-    while (!SD.begin(SDpin)) {   //Wait for SD card
-    // could write a message to the user regarding inserting SD card.
-
-  }
 
   File calStream = SD.open("cal.txt");
 
@@ -43,12 +43,11 @@ void updateCalVars() {
       calWrite.close();
     }
 
-    else {
-    }
 
   }
 
 }
+
 short polyMap (double X) {
 
   double Y = P[6].toInt() * pow(X, 6);
@@ -62,6 +61,71 @@ short polyMap (double X) {
 
 }
 
+void UpDateTime() {
+
+  File timeStream = SD.open("Time.txt");
+
+  if(timeStream){
+    while(timeStream) {
+
+      String T[5] = {"0"};
+
+      for (int N = 0; N < 4; N++){
+        timeStream.readStringUntil('=');
+        T[N] = timeStream.readStringUntil(';');
+        T[N].trim();
+      }
+      timeStream.close();
+
+      year = T[0].toInt();
+      month = T[1].toInt();
+      hour = T[2].toInt();
+      min = T[3].toInt();
+      sec = T[4].toInt();
+
+    }
+  }
+
+  else {
+    File TimeWrite = SD.open("time.txt",FILE_WRITE);
+    if (TimeWrite) {
+      TimeWrite.println("Year = 0; Example 2017");
+      TimeWrite.println("Month = 0; Example 3, for march");
+      TimeWrite.println("Day = 0; Please enter a value between 1 and 31");
+      TimeWrite.println("hour = 0; Please enter a value between 0 and 23");
+      TimeWrite.println("Minute = 0; Please enter a value between 0 and 59");
+      TimeWrite.println("Seconds = 0; as above");
+      TimeWrite.close();
+    }
+
+  }
+
+  if(!year && !month && !hour && !min && !sec) {
+
+    Serial.println("Yes they all equal zero");
+    return;
+
+  }
+
+  else {
+
+    rtc.set(sec, min, hour, day, month, year); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
+
+     SD.remove("time.txt");
+
+    File TimeWrite = SD.open("time.txt",FILE_WRITE);
+    if (TimeWrite) {
+      TimeWrite.println("Year = 0; Example 2017");
+      TimeWrite.println("Month = 0; Example 3, for march");
+      TimeWrite.println("Day = 0; Please enter a value between 1 and 31");
+      TimeWrite.println("hour = 0; Please enter a value between 0 and 23");
+      TimeWrite.println("Minute = 0; Please enter a value between 0 and 59");
+      TimeWrite.println("Seconds = 0; as above");
+      TimeWrite.close();
+    }
+  }
+}
+
 void setup() {
 
   //start RTC
@@ -69,20 +133,18 @@ void setup() {
 
   //rtc.set(0, 4, 16, 19, 03, 2017); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
 
-  updateCalVars();
-
-
-
   Serial.begin(9600);
   while(!Serial){} // wait for serial link
   Serial.println("Coms port connected");
 
+  while (!SD.begin(SDpin)) {   //Wait for SD card
+  // could write a message to the user regarding inserting SD card.
+  }
+  updateCalVars();
+  UpDateTime();
 }
 
 void loop() {
-
-  uint8_t sec, min, hour, day, month;
-  uint16_t year;
 
   //get time from RTC
   rtc.get(&sec, &min, &hour, &day, &month, &year);
