@@ -1,6 +1,6 @@
 ## Welcome to the GitHub page for Arduino SD Data logger
 
-So far i have completed the calibration read. This looks at the SD card for a calibraion file. The calibration file has the polynomial variables in. if the calibration file is not avalible, one is created ready for the user to change the information.
+So far i have completed the calibration read. This looks at the SD card for a calibraion file. The calibration file has the polynomial variables in. if the calibration file is not avalible, one is created with an example, ready for the user to change the information.
 
 
 
