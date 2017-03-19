@@ -15,6 +15,8 @@ uint16_t year;
 
 #include <LiquidCrystal_I2C.h>
 
+LiquidCrystal_I2C lcd(0x3F,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+
 void updateCalVars() {
 
   File calStream = SD.open("cal.txt");
@@ -79,9 +81,10 @@ void UpDateTime() {
 
       year = T[0].toInt();
       month = T[1].toInt();
-      hour = T[2].toInt();
-      min = T[3].toInt();
-      sec = T[4].toInt();
+      day = T[2].toInt();
+      hour = T[3].toInt();
+      min = T[4].toInt();
+      sec = T[5].toInt();
 
     }
   }
@@ -131,7 +134,8 @@ void setup() {
   //start RTC
   rtc.start();
 
-  //rtc.set(0, 4, 16, 19, 03, 2017); //08:00:00 24.12.2014 //sec, min, hour, day, month, year
+  lcd.init();                      // initialize the lcd
+  lcd.backlight();
 
   Serial.begin(9600);
   while(!Serial){} // wait for serial link
@@ -146,24 +150,14 @@ void setup() {
 
 void loop() {
 
-  //get time from RTC
+    //get time from RTC
   rtc.get(&sec, &min, &hour, &day, &month, &year);
 
-  //serial output
-  Serial.print("\nTime: ");
-  Serial.print(hour, DEC);
-  Serial.print(":");
-  Serial.print(min, DEC);
-  Serial.print(":");
-  Serial.print(sec, DEC);
+String lineOne = String(hour) + ":" + String(min) + ":" + String(sec);
 
-  Serial.print("\nDate: ");
-  Serial.print(day, DEC);
-  Serial.print(".");
-  Serial.print(month, DEC);
-  Serial.print(".");
-  Serial.print(year, DEC);
+  lcd.clear();
+  lcd.print(lineOne);
 
-  //wait a second
+    //wait a second
   delay(1000);
 }
