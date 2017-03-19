@@ -1,8 +1,18 @@
-## Welcome to GitHub Pages
+## Welcome to the GitHub page for Arduino SD Data logger
 
-You can use the [editor on GitHub](https://github.com/jrd3n/SD_Logger/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+So far i have completed the calibration read. This looks at the SD card for a calibraion file. The calibration file has the polynomial variables in. if the calibration file is not avalible, one is created ready for the user to change the information.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+
+
+
+
+
+
+
+
+
+
+
 
 ### Markdown
 
