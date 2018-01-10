@@ -1,15 +1,22 @@
 #include <Arduino.h>
 #include <funkyTime.h> // all the functions and vars for the time
-#include <LCDisplay.h> // all the funtions for the LCD
-#include <menu.h>
+// #include <LCDisplay.h> // all the funtions for the LCD
+// #include <menu.h>
+
+#include <Logger.h>
+
+String TimeDate = "";
+
+Logger SDCard(&TimeDate);
 
 void setup()
 {
 
     Serial.begin(115200);
-    menuSetup(2); //PIN NUMBER FOR MENU INPUT
-    startRTC();
-    LCDbegin();
+
+    // startRTC();
+
+    SDCard.begin();
 
     // pinMode(trialpinNo, INPUT);
 }
@@ -17,7 +24,7 @@ void setup()
 void loop()
 {
 
-    menuRun();
+    SDCard.run(); // this needs to be in the loop
 
     /*
     while (digitalRead(trialpinNo))
