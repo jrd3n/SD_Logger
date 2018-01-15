@@ -2,97 +2,155 @@
 #include "Logger.h"
 #include <SPI.h>
 #include <SD.h>
+#include <DS1307.h>
 
-Logger::Logger(int *Column1)
+DS1307 rtc;
+File myFile;
+
+Logger::Logger(int rew)
 {
 }
 
-void Logger::record() {} // starts a new file named [time long]
-void Logger::pause() {}
-void Logger::stop() {}
-
-void Logger::begin() {} //
-
-void Logger::run() {}
-
-/*
-  SD card read/write
-
- This example shows how to read and write data to and from an SD card file
- The circuit:
- * SD card attached to SPI bus as follows:
- ** MOSI - pin 11
- ** MISO - pin 12
- ** CLK - pin 13
- ** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
-
- created   Nov 2010
- by David A. Mellis
- modified 9 Apr 2012
- by Tom Igoe
-
- This example code is in the public domain.
-
- */
-
-File myFile;
-
-void SD_DoSomething()
+void Logger::record()
 {
+    recording = true;
 
-    // Open serial communications and wait for port to open:
-    Serial.begin(9600);
-    while (!Serial)
-    {
-        ; // wait for serial port to connect. Needed for native USB port only
-    }
+    logFile = timeFileName();
 
-    Serial.print("Initializing SD card...");
+    logFile += ".csv";
 
+    myFile = SD.open(logFile,FILE_WRITE);
+
+    myFile.close();
+}
+//void Logger::pause() {}
+//void Logger::stop() {}
+
+void Logger::begin()
+{
     if (!SD.begin(4))
     {
-        Serial.println("initialization failed!");
+        Serial.println("Card failed, or not present");
+        // don't do anything more:
         while (1)
-            ;
-    }
-    Serial.println("initialization done.");
-
-    // open the file. note that only one file can be open at a time,
-    // so you have to close this one before opening another.
-    myFile = SD.open("test.txt", FILE_WRITE);
-
-    // if the file opened okay, write to it:
-    if (myFile)
-    {
-        Serial.print("Writing to test.txt...");
-        myFile.println("testing 1, 2, 3.");
-        // close the file:
-        myFile.close();
-        Serial.println("done.");
-    }
-    else
-    {
-        // if the file didn't open, print an error:
-        Serial.println("error opening test.txt");
-    }
-
-    // re-open the file for reading:
-    myFile = SD.open("test.txt");
-    if (myFile)
-    {
-        Serial.println("test.txt:");
-
-        // read from the file until there's nothing else in it:
-        while (myFile.available())
         {
-            Serial.write(myFile.read());
+        };
+    }
+
+    rtc.start();
+
+} //
+
+void Logger::run(double logVal)
+{
+    if (nextLogTime < millis())
+    {
+        myFile = SD.open(logFile);
+
+        if (myFile)
+        {
+            Serial.print(logFile);
+            Serial.println(" exists.");
+            myFile.close();
+
+            myFile = SD.open(logFile, FILE_WRITE);
+
+            if (myFile)
+            {
+
+                myFile.print(timeLong());
+                myFile.print(",");
+                myFile.println(logVal);
+                Serial.println("write sucseccful");
+
+                myFile.close(); // close the file:
+            }
         }
-        // close the file:
-        myFile.close();
+        else
+        {
+            Serial.print(logFile);
+            Serial.println(" doesn't exist.");
+
+            Serial.println("Writing to dump");
+
+            DumpNumber += 1;
+
+            //record();
+        }
+
+        nextLogTime = interval + millis();
+    }
+}
+
+String Logger::tenBelow(int input)
+{
+
+    if (input < 10)
+    {
+        String lessthanTen = "";
+
+        lessthanTen += "0";
+        lessthanTen += String(input);
+
+        return lessthanTen;
     }
     else
     {
-        // if the file didn't open, print an error:
-        Serial.println("error opening test.txt");
+        return String(input);
     }
+}
+
+String Logger::timeLong()
+{
+
+    rtc.get(&sec, &min, &hour, &day, &month, &year);
+
+    String timeString = "";
+
+    timeString += tenBelow(hour);
+    timeString += ":";
+    timeString += tenBelow(min);
+    timeString += ":";
+    timeString += tenBelow(sec);
+
+    timeString += " ";
+    timeString += tenBelow(day);
+    timeString += "-";
+    timeString += tenBelow(month);
+    timeString += "-";
+    timeString += year;
+
+    return timeString;
+}
+
+String Logger::timeShort()
+{
+
+    rtc.get(&sec, &min, &hour, &day, &month, &year);
+
+    String timeString = "";
+
+    timeString += tenBelow(hour);
+    timeString += ":";
+    timeString += tenBelow(min);
+    timeString += ":";
+    timeString += tenBelow(sec);
+
+    return timeString;
+}
+
+String Logger::timeFileName()
+{
+
+    rtc.get(&sec, &min, &hour, &day, &month, &year);
+
+    String timeString = "";
+
+    timeString += tenBelow(hour);
+    timeString += "-";
+    timeString += tenBelow(min);
+    timeString += "-";
+    timeString += tenBelow(sec);
+
+    return timeString;
 }

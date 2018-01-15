@@ -6,19 +6,33 @@
 class Logger
 {
 public:
-  Logger(int *Column1);
+  Logger(int rew);
   void record();
-  void pause();
-  void stop();
+  //void pause();
+  //void stop();
   void begin();
 
-  void run();
+  void run(double logVal);
 
   int interval = 1000;
 
-private:
-  int _pin;
+  String timeLong();
+  String timeShort();
 
+private:
+  bool recording = 0;
+  String timeFileName();
+  uint8_t sec, min, hour, day, month;
+  uint16_t year;
+  unsigned long nextLogTime = 0;
+
+  String logFile = "test.csv";
+
+  String tenBelow(int input);
+
+  unsigned int DumpNumber = 0;
+  String dumpfile[];
+  //int _pin;
 };
 
 #endif
