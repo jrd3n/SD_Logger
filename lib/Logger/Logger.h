@@ -7,7 +7,7 @@ class Logger
 {
 public:
   Logger(int rew);
-  void record();
+  void record(String title);
   //void pause();
   //void stop();
   void begin();

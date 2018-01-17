@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Logger.h>
+#include <LCDisplay.h>
 
 /*
   SD card read/write
@@ -22,30 +23,26 @@
  */
 
 Logger SD_log(123); //this number does nothing, i just need it with a constructor for some reason
+LCDisplay LCD(1);
 
 void setup()
 {
 
     Serial.begin(115200);
 
+    LCD.begin();
+
     SD_log.begin();
 
-    /*
-    for (int index = 0; index < 100; index++)
-    {
-        Serial.println(index);
-    }
-
-    */
-
-    SD_log.record();
+    SD_log.record("value (mm)"); //title at the top fo the coloumn
 
     Serial.println("About to enter Loop()");
 }
 
 void loop()
 {
-    SD_log.run(123); // the value in the brackets will get logged
 
+    SD_log.run(123); // the value in the brackets will get logged
+    LCD.run("Time:", String(SD_log.timeShort()), "Msg:", "Hello world");
     //  delay(300);
 }

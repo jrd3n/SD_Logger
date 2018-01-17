@@ -11,7 +11,7 @@ Logger::Logger(int rew)
 {
 }
 
-void Logger::record()
+void Logger::record(String title)
 {
     recording = true;
 
@@ -19,9 +19,14 @@ void Logger::record()
 
     logFile += ".csv";
 
-    myFile = SD.open(logFile,FILE_WRITE);
+    myFile = SD.open(logFile, FILE_WRITE);
 
-    myFile.close();
+    myFile.print("Time");
+    myFile.print(",");
+    myFile.println(title);
+    Serial.println("write sucseccful");
+
+    myFile.close(); // close the file:
 }
 //void Logger::pause() {}
 //void Logger::stop() {}
