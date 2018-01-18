@@ -1,6 +1,10 @@
 #include <Arduino.h>
 #include <Logger.h>
 #include <LCDisplay.h>
+#include <bubbleCounter.h>
+
+int BubblePinVal = 0;
+int pinValMax = 0;
 
 /*
   SD card read/write
@@ -21,28 +25,24 @@
  This example code is in the public domain.
 
  */
-
-Logger SD_log(123); //this number does nothing, i just need it with a constructor for some reason
+bubbleCounter bubble(A3); // choose the pin number
+Logger SD_log(123);       //this number does nothing, i just need it with a constructor for some reason
 LCDisplay LCD(1);
 
 void setup()
 {
-
     Serial.begin(115200);
-
     LCD.begin();
-
     SD_log.begin();
-
-    SD_log.record("value (mm)"); //title at the top fo the coloumn
-
+    SD_log.record("Bubble per hour (BPH)"); //title at the top fo the coloumn
     Serial.println("About to enter Loop()");
 }
 
 void loop()
 {
+   
+    bubble.run();             // for the counter to work this needs to be in the loop
+    SD_log.run(bubble.BPH()); // the value in the brackets will get logged
+    LCD.run("Bubble:", String(bubble.count), "BPH:", String(bubble.BPH()));
 
-    SD_log.run(123); // the value in the brackets will get logged
-    LCD.run("Time:", String(SD_log.timeShort()), "Msg:", "Hello world");
-    //  delay(300);
 }
