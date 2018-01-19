@@ -13,20 +13,23 @@ bubbleCounter::bubbleCounter(int pinNo)
 void bubbleCounter::run()
 {
     bool bubbleState = analogRead(bubblePin) > threshold;
+    
+    bool debounce = debounceTime > millis();
 
-    if (!previousBubbleState && bubbleState) // only register one buble per bubble, rather than rampng up numbers when high
+    if (!previousBubbleState && bubbleState && !debounce)
     {
         debounceTime = millis() + 5; // start timmer
+        previousBubbleState = HIGH; // once this timer starts, this if() is locked out
     }
-    if (!previousBubbleState && bubbleState && debounceTime > millis())
+    if (previousBubbleState && bubbleState && debounce) // 
     {
-        previousBubbleState = HIGH;
-        debounceTime = millis() + 2000; // start timmer
-    }
-    if (!bubbleState && previousBubbleState && debounceTime > millis())
-    {
+        debounceTime = millis() +2000; // start timmer to lock out this if() for 2 secs
         count++;
-        rollingAverage(1);
+        rollingAverage();
+    }
+    if (previousBubbleState && !bubbleState && debounce)
+    {
+        debounceTime = millis() - 2000; // this minuses the millis so that only the top if() can be true
         previousBubbleState = LOW;
     }
 }
@@ -36,7 +39,7 @@ int bubbleCounter::pinVal()
     return analogRead(bubblePin) > threshold;
 }
 
-void bubbleCounter::rollingAverage(double hours)
+void bubbleCounter::rollingAverage()
 {
     min5intervals[0]++;
 }
