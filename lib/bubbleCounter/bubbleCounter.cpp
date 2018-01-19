@@ -8,6 +8,8 @@ bubbleCounter::bubbleCounter(int pinNo)
     bubblePin = pinNo; // makes the pin No avalible later on
 
     // Serial.println("ending the threshold analasis");
+    
+    nextRollTime = millis() + (3600000) / 12;
 }
 
 void bubbleCounter::run()
@@ -25,23 +27,27 @@ void bubbleCounter::run()
     {
         debounceTime = millis() +2000; // start timmer to lock out this if() for 2 secs
         count++;
-        rollingAverage();
+        min5intervals[0]++;
     }
     if (previousBubbleState && !bubbleState && debounce)
     {
         debounceTime = millis() - 1; // this minuses the millis so that only the top if() can be true
         previousBubbleState = LOW; // this means only the top if() can be true
     }
-}
+    
+    // the if statement below this mark, moves everything in the array up one level, then deletes the value in [0]
+    
+    if (nextRollTime < millis())
+    {
+        for (int i = 0; i < 11; i++)
+        {
+            min5intervals[i + 1] = min5intervals[i];
+        }
 
-int bubbleCounter::pinVal()
-{
-    return analogRead(bubblePin) > threshold;
-}
+        min5intervals[0] = 0;
 
-void bubbleCounter::rollingAverage()
-{
-    min5intervals[0]++;
+        nextRollTime = millis() + (3600000) / 12;
+    }
 }
 
  int bubbleCounter::BPH()
@@ -52,19 +58,5 @@ void bubbleCounter::rollingAverage()
     {
         _BPH += min5intervals[i];
     }
-
-    if (nextRollTime < millis())
-    {
-
-        for (int i = 0; i < 11; i++)
-        {
-            min5intervals[i + 1] = min5intervals[i];
-        }
-
-        min5intervals[0] = 0;
-
-        nextRollTime = millis() + (3600000) / 12;
-    }
-
     return _BPH;
 }
