@@ -19,9 +19,9 @@ void bubbleCounter::run()
     if (!previousBubbleState && bubbleState && !debounce)
     {
         debounceTime = millis() + 5; // start timmer
-        previousBubbleState = HIGH; // once this timer starts, this if() is locked out
+        previousBubbleState = HIGH; // this prevous state locks out this if()
     }
-    if (previousBubbleState && bubbleState && debounce) // 
+    if (previousBubbleState && bubbleState && debounce) // only act if bubblestate has been high for 5 millis().
     {
         debounceTime = millis() +2000; // start timmer to lock out this if() for 2 secs
         count++;
@@ -29,8 +29,8 @@ void bubbleCounter::run()
     }
     if (previousBubbleState && !bubbleState && debounce)
     {
-        debounceTime = millis() - 2000; // this minuses the millis so that only the top if() can be true
-        previousBubbleState = LOW;
+        debounceTime = millis() - 1; // this minuses the millis so that only the top if() can be true
+        previousBubbleState = LOW; // this means only the top if() can be true
     }
 }
 
