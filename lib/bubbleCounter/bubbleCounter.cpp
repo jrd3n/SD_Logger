@@ -50,9 +50,9 @@ void bubbleCounter::run()
     }
 }
 
- int bubbleCounter::BPH()
+ unsigned int bubbleCounter::BPH()
 {
-    int _BPH = 0;
+   unsigned int _BPH = 0;
 
     for (int i = 0; i < 11; i++)
     {
