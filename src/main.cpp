@@ -25,8 +25,8 @@ int pinValMax = 0;
  This example code is in the public domain.
 
  */
-bubbleCounter bubble(A3); // choose the pin number
-Logger SD_log(123);       //this number does nothing, i just need it with a constructor for some reason
+bubbleCounter bubble(1); // choose the pin number
+Logger SD_log;       //this number does nothing, i just need it with a constructor for some reason
 LCDisplay LCD(1);
 
 void setup()
@@ -35,7 +35,7 @@ void setup()
     LCD.begin();
     SD_log.begin();
     SD_log.record("Bubble per hour (BPH)"); //title at the top fo the coloumn
-    Serial.println("About to enter Loop()");
+   // Serial.println("About to enter Loop()");
 }
 
 void loop()
@@ -43,6 +43,6 @@ void loop()
    
     bubble.run();             // for the counter to work this needs to be in the loop
     SD_log.run(bubble.BPH()); // the value in the brackets will get logged
-    LCD.run("Count:", String(bubble.count), "BPM:", String(bubble.BPH()));
+    LCD.run("Time:", String(SD_log.timeShort()),"BPH:",String(bubble.BPH()));
 
 }

@@ -7,7 +7,7 @@
 DS1307 rtc;
 File myFile;
 
-Logger::Logger(int rew)
+Logger::Logger()
 {
 }
 
@@ -24,7 +24,7 @@ void Logger::record(String title)
     myFile.print("Time");
     myFile.print(",");
     myFile.println(title);
-    Serial.println("write sucseccful");
+ //   Serial.println("write sucseccful");
 
     myFile.close(); // close the file:
 }
@@ -54,8 +54,8 @@ void Logger::run(double logVal)
 
         if (myFile)
         {
-            Serial.print(logFile);
-            Serial.println(" exists.");
+         //   Serial.print(logFile);
+          //  Serial.println(" exists.");
             myFile.close();
 
             myFile = SD.open(logFile, FILE_WRITE);
@@ -66,7 +66,7 @@ void Logger::run(double logVal)
                 myFile.print(timeLong());
                 myFile.print(",");
                 myFile.println(logVal);
-                Serial.println("write sucseccful");
+              //  Serial.println("write sucseccful");
 
                 myFile.close(); // close the file:
             }
@@ -74,9 +74,9 @@ void Logger::run(double logVal)
         else
         {
             Serial.print(logFile);
-            Serial.println(" doesn't exist.");
+          //  Serial.println(" doesn't exist.");
 
-            Serial.println("Writing to dump");
+          //  Serial.println("Writing to dump");
 
             DumpNumber += 1;
 
