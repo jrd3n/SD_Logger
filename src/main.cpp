@@ -43,6 +43,6 @@ void loop()
    
     bubble.run();             // for the counter to work this needs to be in the loop
     SD_log.run(bubble.BPH()); // the value in the brackets will get logged
-    LCD.run("Bubble:", String(bubble.count), "BPH:", String(bubble.BPH()));
+    LCD.run("Count:", String(bubble.count), "BPM:", String(bubble.BPH()));
 
 }
