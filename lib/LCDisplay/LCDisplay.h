@@ -6,7 +6,7 @@
 class LCDisplay
 {
   public:
-    LCDisplay(int i);
+    LCDisplay();
     void begin();
     void run(String LineOne, String LineTwo);
     void run(String TopLeft, String TopRight,String BottomLeft,String BottomRight);

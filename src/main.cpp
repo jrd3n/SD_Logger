@@ -27,7 +27,7 @@ int pinValMax = 0;
  */
 bubbleCounter bubble(A3); // choose the pin number
 Logger SD_log;       //this number does nothing, i just need it with a constructor for some reason
-LCDisplay LCD(1);
+LCDisplay LCD;
 
 void setup()
 {
@@ -42,7 +42,7 @@ void loop()
 {
    
     bubble.run();             // for the counter to work this needs to be in the loop
-    SD_log.run(bubble.BPH()); // the value in the brackets will get logged
-    LCD.run("Time:", String(SD_log.timeShort()),"BPH:",String(bubble.BPH()));
+    SD_log.run(bubble.BPH); // the value in the brackets will get logged
+    LCD.run("Time:", String(SD_log.timeShort()),"BPH:",String(bubble.BPH));
 
 }

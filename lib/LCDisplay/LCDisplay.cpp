@@ -5,7 +5,7 @@
 
 LiquidCrystal_PCF8574 lcd(0x27); // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-LCDisplay::LCDisplay(int i)
+LCDisplay::LCDisplay()
 {
 }
 
