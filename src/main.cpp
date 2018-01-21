@@ -25,7 +25,7 @@ int pinValMax = 0;
  This example code is in the public domain.
 
  */
-bubbleCounter bubble(1); // choose the pin number
+bubbleCounter bubble(A3); // choose the pin number
 Logger SD_log;       //this number does nothing, i just need it with a constructor for some reason
 LCDisplay LCD(1);
 
